@@ -9,7 +9,7 @@
         <div class="card bg-primary text-white">
             <div class="card-body">
                 <h1 class="card-title">Welcome to the Library Management System</h1>
-                <p class="card-text">Your one-stop solution for managing books, magazines, and library members.</p>
+                <p class="card-text">Your one-stop solution for managing books and library members.</p>
             </div>
         </div>
     </div>
@@ -45,9 +45,6 @@
                 <div class="d-grid gap-2">
                     <a href="{% url 'library:book_list' %}" class="btn btn-primary">
                         <i class="fas fa-book"></i> Browse Books
-                    </a>
-                    <a href="{% url 'library:magazine_list' %}" class="btn btn-info">
-                        <i class="fas fa-newspaper"></i> Browse Magazines
                     </a>
                     {% if user.is_authenticated %}
                         <a href="{% url 'library:borrowing_list' %}" class="btn btn-success">
@@ -103,31 +100,5 @@
         </div>
     </div>
 
-    <!-- Latest Magazines -->
-    <div class="col-12">
-        <h2>Latest Magazines</h2>
-        <div class="row row-cols-1 row-cols-md-3 g-4">
-            {% for magazine in magazines %}
-                <div class="col">
-                    <div class="card h-100">
-                        {% if magazine.cover_image %}
-                            <img src="{{ magazine.cover_image.url }}" class="card-img-top" alt="{{ magazine.title }}">
-                        {% else %}
-                            <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
-                                <i class="fas fa-newspaper fa-3x text-muted"></i>
-                            </div>
-                        {% endif %}
-                        <div class="card-body">
-                            <h5 class="card-title">{{ magazine.title }}</h5>
-                            <p class="card-text">
-                                <small class="text-muted">ISSN: {{ magazine.issn }}</small>
-                            </p>
-                            <a href="{% url 'library:magazine_detail' magazine.pk %}" class="btn btn-info">View Details</a>
-                        </div>
-                    </div>
-                </div>
-            {% endfor %}
-        </div>
-    </div>
 </div>
 {% endblock %} 
