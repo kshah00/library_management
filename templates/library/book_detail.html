@@ -27,7 +27,9 @@
                     <p><strong>Category:</strong> {{ book.category.name }}</p>
                     <p><strong>Publication Year:</strong> {{ book.publication_year }}</p>
                     <p><strong>Status:</strong> 
-                        {% if book.is_available %}
+                        {% if not book.is_active %}
+                            <span class="badge bg-secondary">Inactive</span>
+                        {% elif book.available_quantity > 0 %}
                             <span class="badge bg-success">Available</span>
                         {% else %}
                             <span class="badge bg-danger">Not Available</span>
@@ -44,7 +46,7 @@
                     <a href="{% url 'library:book_delete' book.pk %}" class="btn btn-danger me-2">Delete Book</a>
                 {% endif %}
                 
-                {% if book.is_available and user.is_authenticated and not user.is_staff %}
+                {% if book.is_active and book.available_quantity > 0 and user.is_authenticated and not user.is_staff %}
                     <a href="{% url 'library:borrowing_create' %}?book={{ book.pk }}" class="btn btn-success">Borrow Book</a>
                 {% endif %}
                 
