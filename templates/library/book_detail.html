@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ book.title }} - Library Management{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-4">
+            {% if book.cover_image %}
+                <img src="{{ book.cover_image.url }}" alt="{{ book.title }}" class="img-fluid rounded shadow">
+            {% else %}
+                <div class="ratio ratio-4x3 bg-light rounded shadow d-flex align-items-center justify-content-center">
+                    <div class="text-center text-muted">
+                        <i class="bi bi-book" style="font-size: 3rem;"></i>
+                        <p class="mt-2">No Cover Available</p>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+        <div class="col-md-8">
+            <h1 class="mb-3">{{ book.title }}</h1>
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <p><strong>Author:</strong> <a href="{% url 'library:author_detail' book.author.pk %}">{{ book.author.name }}</a></p>
+                    <p><strong>ISBN:</strong> {{ book.isbn }}</p>
+                    <p><strong>Category:</strong> {{ book.category.name }}</p>
+                    <p><strong>Publication Year:</strong> {{ book.publication_year }}</p>
+                    <p><strong>Status:</strong> 
+                        {% if book.is_available %}
+                            <span class="badge bg-success">Available</span>
+                        {% else %}
+                            <span class="badge bg-danger">Not Available</span>
+                        {% endif %}
+                    </p>
+                    <p><strong>Description:</strong></p>
+                    <p class="text-muted">{{ book.description|linebreaks }}</p>
+                </div>
+            </div>
+
+            <div class="mt-4">
+                {% if user.is_staff %}
+                    <a href="{% url 'library:book_update' book.pk %}" class="btn btn-primary me-2">Edit Book</a>
+                    <a href="{% url 'library:book_delete' book.pk %}" class="btn btn-danger me-2">Delete Book</a>
+                {% endif %}
+                
+                {% if book.is_available and user.is_authenticated and not user.is_staff %}
+                    <a href="{% url 'library:borrowing_create' %}?book={{ book.pk }}" class="btn btn-success">Borrow Book</a>
+                {% endif %}
+                
+                <a href="{% url 'library:book_list' %}" class="btn btn-secondary">Back to Books</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
