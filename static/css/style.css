@@ -1,0 +1,112 @@
+/* Custom styles for Library Management System */
+
+/* Card hover effect */
+.card {
+    transition: transform 0.2s ease-in-out;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Book cover placeholder */
+.card-img-top {
+    object-fit: cover;
+    height: 200px;
+}
+
+/* Badge styles */
+.badge {
+    font-size: 0.9rem;
+    padding: 0.5em 1em;
+}
+
+/* Form styles */
+.form-control:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+/* Button hover effects */
+.btn {
+    transition: all 0.2s ease-in-out;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+}
+
+/* Navigation active state */
+.nav-link.active {
+    font-weight: bold;
+    color: #0d6efd;
+}
+
+/* Footer styles */
+footer {
+    margin-top: auto;
+    background-color: #f8f9fa;
+}
+
+/* Statistics card */
+.stats-card {
+    background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+    color: white;
+}
+
+/* Category list */
+.list-group-item {
+    transition: background-color 0.2s ease-in-out;
+}
+
+.list-group-item:hover {
+    background-color: #f8f9fa;
+}
+
+/* Pagination */
+.page-link {
+    color: #0d6efd;
+}
+
+.page-item.active .page-link {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+/* Alert messages */
+.alert {
+    border-radius: 0.5rem;
+    border: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Search input */
+.search-input {
+    border-radius: 2rem;
+    padding-left: 1rem;
+}
+
+/* Welcome section */
+.welcome-section {
+    background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+    color: white;
+    padding: 3rem 0;
+    margin-bottom: 2rem;
+    border-radius: 1rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .card-img-top {
+        height: 150px;
+    }
+    
+    .welcome-section {
+        padding: 2rem 0;
+    }
+    
+    .stats-card {
+        margin-bottom: 1rem;
+    }
+} 
