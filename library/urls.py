@@ -14,9 +14,12 @@ urlpatterns = [
     path('books/<int:pk>/update/', views.BookUpdateView.as_view(), name='book_update'),
     path('books/<int:pk>/delete/', views.BookDeleteView.as_view(), name='book_delete'),
     
-    # Magazines
-    path('magazines/', views.MagazineListView.as_view(), name='magazine_list'),
-    path('magazines/<int:pk>/', views.MagazineDetailView.as_view(), name='magazine_detail'),
+    # Authors
+    path('authors/', views.AuthorListView.as_view(), name='author_list'),
+    path('authors/<int:pk>/', views.AuthorDetailView.as_view(), name='author_detail'),
+    path('authors/create/', views.AuthorCreateView.as_view(), name='author_create'),
+    path('authors/<int:pk>/update/', views.AuthorUpdateView.as_view(), name='author_update'),
+    path('authors/<int:pk>/delete/', views.AuthorDeleteView.as_view(), name='author_delete'),
     
     # Members
     path('members/', views.MemberListView.as_view(), name='member_list'),

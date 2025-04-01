@@ -6,8 +6,8 @@ from django.shortcuts import redirect, get_object_or_404
 from django.contrib import messages
 from django.utils import timezone
 from django.db.models import Q
-from .models import Book, Magazine, Author, Category, Member, Borrowing
-from .forms import BookForm, MagazineForm, AuthorForm, CategoryForm, MemberForm, BorrowingForm
+from .models import Book, Author, Category, Member, Borrowing
+from .forms import BookForm, AuthorForm, CategoryForm, MemberForm, BorrowingForm
 from .exceptions import BookAvailabilityError, DueDateViolationError
 
 # Create your views here.
@@ -20,7 +20,6 @@ class HomeView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['magazines'] = Magazine.objects.filter(is_active=True)[:6]
         context['categories'] = Category.objects.all()
         context['stats'] = Book.get_book_statistics()
         return context
@@ -88,58 +87,46 @@ class BookDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     def test_func(self):
         return self.request.user.is_staff
 
-class MagazineListView(ListView):
-    model = Magazine
-    template_name = 'library/magazine_list.html'
-    context_object_name = 'magazines'
-    paginate_by = 12
+class AuthorListView(ListView):
+    model = Author
+    template_name = 'library/author_list.html'
+    context_object_name = 'authors'
 
-    def get_queryset(self):
-        queryset = Magazine.objects.filter(is_active=True)
-        query = self.request.GET.get('q')
-        category = self.request.GET.get('category')
-        
-        if query:
-            queryset = queryset.filter(
-                Q(title__icontains=query) |
-                Q(issn__icontains=query)
-            )
-        if category:
-            queryset = queryset.filter(category__name=category)
-            
-        return queryset
+class AuthorDetailView(DetailView):
+    model = Author
+    template_name = 'library/author_detail.html'
+    context_object_name = 'author'
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['categories'] = Category.objects.all()
-        return context
+class AuthorCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
+    model = Author
+    form_class = AuthorForm
+    template_name = 'library/author_form.html'
+    success_url = reverse_lazy('author_list')
 
-class MagazineDetailView(DetailView):
-    model = Magazine
-    template_name = 'library/magazine_detail.html'
-    context_object_name = 'magazine'
+    def test_func(self):
+        return self.request.user.is_staff
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['is_available'] = self.object.available_quantity > 0
-        return context
+class AuthorUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Author
+    form_class = AuthorForm
+    template_name = 'library/author_form.html'
+    success_url = reverse_lazy('author_list')
+
+    def test_func(self):
+        return self.request.user.is_staff
+
+class AuthorDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Author
+    template_name = 'library/author_confirm_delete.html'
+    success_url = reverse_lazy('author_list')
+
+    def test_func(self):
+        return self.request.user.is_staff
 
 class MemberListView(LoginRequiredMixin, ListView):
     model = Member
     template_name = 'library/member_list.html'
     context_object_name = 'members'
-
-    def get_queryset(self):
-        queryset = Member.objects.all()
-        query = self.request.GET.get('q')
-        
-        if query:
-            queryset = queryset.filter(
-                Q(first_name__icontains=query) |
-                Q(last_name__icontains=query) |
-                Q(email__icontains=query)
-            )
-        return queryset
 
 class MemberDetailView(LoginRequiredMixin, DetailView):
     model = Member

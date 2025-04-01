@@ -1,6 +1,6 @@
 from django import forms
 from django.core.validators import RegexValidator
-from .models import Book, Magazine, Author, Category, Member, Borrowing, LibraryItem
+from .models import Book, Author, Category, Member, Borrowing
 from .exceptions import InvalidISBNError, InvalidEmailError, InvalidPhoneNumberError
 import re
 from django.utils import timezone
@@ -23,17 +23,6 @@ class BookForm(forms.ModelForm):
             raise InvalidISBNError(f"Invalid ISBN format: {isbn}. ISBN must be 10-13 digits.")
         return isbn
 
-class MagazineForm(forms.ModelForm):
-    class Meta:
-        model = Magazine
-        fields = ['title', 'issn', 'publisher', 'publication_date', 
-                 'category', 'quantity', 'available_quantity', 'location', 
-                 'cover_image', 'description']
-        widgets = {
-            'publication_date': forms.DateInput(attrs={'type': 'date'}),
-            'description': forms.Textarea(attrs={'rows': 4}),
-        }
-
 class AuthorForm(forms.ModelForm):
     class Meta:
         model = Author
@@ -51,7 +40,7 @@ class AuthorForm(forms.ModelForm):
 
     def clean_phone(self):
         phone = self.cleaned_data['phone']
-        phone_pattern = r'^\+?1?\d{9,15}$'
+        phone_pattern = r'^\d{10}$'
         if not re.match(phone_pattern, phone):
             raise InvalidPhoneNumberError(f"Invalid phone number format: {phone}")
         return phone
@@ -81,15 +70,15 @@ class MemberForm(forms.ModelForm):
 
     def clean_phone(self):
         phone = self.cleaned_data['phone']
-        phone_pattern = r'^\+?1?\d{9,15}$'
+        phone_pattern = r'^\d{10}$'
         if not re.match(phone_pattern, phone):
             raise InvalidPhoneNumberError(f"Invalid phone number format: {phone}")
         return phone
 
 class BorrowingForm(forms.ModelForm):
     item = forms.ModelChoiceField(
-        queryset=LibraryItem.objects.filter(is_active=True),
-        label="Item to Borrow"
+        queryset=Book.objects.filter(is_active=True),
+        label="Book to Borrow"
     )
 
     class Meta:

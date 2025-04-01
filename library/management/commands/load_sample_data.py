@@ -1,11 +1,11 @@
 from django.core.management.base import BaseCommand
 from django.utils import timezone
-from library.models import Book, Magazine, Author, Category
+from library.models import Book, Author, Category
 from datetime import timedelta
 import random
 
 class Command(BaseCommand):
-    help = 'Loads sample books and magazines into the database'
+    help = 'Loads sample books into the database'
 
     def handle(self, *args, **kwargs):
         # Create categories
@@ -110,72 +110,11 @@ class Command(BaseCommand):
             }
         ]
 
-        # Sample magazine data
-        magazine_data = [
-            {
-                'title': 'Tech Monthly',
-                'description': 'Latest in technology and innovation',
-                'issn': '12345678',
-                'publisher': 'Tech Media',
-                'publication_date': timezone.now().date() - timedelta(days=15),
-                'quantity': 10,
-                'available_quantity': 8,
-                'location': 'Magazine Rack 1'
-            },
-            {
-                'title': 'Science Today',
-                'description': 'Breaking news in scientific research',
-                'issn': '23456789',
-                'publisher': 'Science Media',
-                'publication_date': timezone.now().date() - timedelta(days=30),
-                'quantity': 8,
-                'available_quantity': 6,
-                'location': 'Magazine Rack 2'
-            },
-            {
-                'title': 'Art & Culture',
-                'description': 'Contemporary art and cultural trends',
-                'issn': '34567890',
-                'publisher': 'Art Media',
-                'publication_date': timezone.now().date() - timedelta(days=45),
-                'quantity': 6,
-                'available_quantity': 4,
-                'location': 'Magazine Rack 3'
-            },
-            {
-                'title': 'History Digest',
-                'description': 'Historical events and discoveries',
-                'issn': '45678901',
-                'publisher': 'History Media',
-                'publication_date': timezone.now().date() - timedelta(days=60),
-                'quantity': 5,
-                'available_quantity': 3,
-                'location': 'Magazine Rack 4'
-            },
-            {
-                'title': 'Fiction Weekly',
-                'description': 'Short stories and literary reviews',
-                'issn': '56789012',
-                'publisher': 'Fiction Media',
-                'publication_date': timezone.now().date() - timedelta(days=7),
-                'quantity': 12,
-                'available_quantity': 10,
-                'location': 'Magazine Rack 5'
-            }
-        ]
-
         # Create books
         for book in book_data:
             Book.objects.create(
                 **book,
                 author=random.choice(authors),
-                category=random.choice(categories)
-            )
-
-        # Create magazines
-        for magazine in magazine_data:
-            Magazine.objects.create(
-                **magazine,
                 category=random.choice(categories)
             )
 
