@@ -8,7 +8,7 @@ from django.utils import timezone
 from django.db.models import Q
 from .models import Book, Author, Category, Member, Borrowing
 from .forms import BookForm, AuthorForm, CategoryForm, MemberForm, BorrowingForm
-from .exceptions import BookAvailabilityError, DueDateViolationError
+from .custom_exceptions import BookAvailabilityError, DueDateViolationError
 
 # Create your views here.
 
