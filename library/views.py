@@ -137,13 +137,39 @@ class MemberDetailView(LoginRequiredMixin, DetailView):
         context = super().get_context_data(**kwargs)
         context['borrowings'] = self.object.borrowings.filter(is_returned=False)
         context['history'] = self.object.borrowings.filter(is_returned=True)
+        context['today'] = timezone.now().date()
         return context
+
+class MemberCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
+    model = Member
+    form_class = MemberForm
+    template_name = 'library/member_form.html'
+    success_url = reverse_lazy('library:member_list')
+    
+    def test_func(self):
+        return self.request.user.is_staff
+    
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        messages.success(self.request, f"Successfully created member: {self.object.first_name} {self.object.last_name}")
+        return response
 
 class BorrowingCreateView(LoginRequiredMixin, CreateView):
     model = Borrowing
     form_class = BorrowingForm
     template_name = 'library/borrowing_form.html'
-    success_url = reverse_lazy('borrowing_list')
+    success_url = reverse_lazy('library:borrowing_list')
+
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        book_id = self.request.GET.get('book')
+        if book_id:
+            try:
+                book = Book.objects.get(pk=book_id)
+                form.fields['item'].initial = book
+            except Book.DoesNotExist:
+                pass
+        return form
 
     def form_valid(self, form):
         item = form.cleaned_data['item']
@@ -168,8 +194,15 @@ class BorrowingListView(LoginRequiredMixin, ListView):
             queryset = queryset.filter(is_returned=False)
         elif status == 'returned':
             queryset = queryset.filter(is_returned=True)
+        elif status == 'overdue':
+            queryset = queryset.filter(is_returned=False, due_date__lt=timezone.now().date())
             
         return queryset
+        
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['today'] = timezone.now().date()
+        return context
 
 def return_item(request, pk):
     if request.method == 'POST':

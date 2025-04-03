@@ -122,8 +122,9 @@ class Borrowing(models.Model):
 
     def clean(self):
         """Validate due date is after borrow date."""
-        if self.due_date <= self.borrow_date:
-            raise ValidationError("Due date must be after borrow date")
+        if self.due_date and self.pk:  # Only check if this is an existing object (has a pk)
+            if self.due_date <= self.borrow_date:
+                raise ValidationError("Due date must be after borrow date")
 
     def save(self, *args, **kwargs):
         self.clean()

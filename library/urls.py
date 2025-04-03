@@ -24,6 +24,7 @@ urlpatterns = [
     # Members
     path('members/', views.MemberListView.as_view(), name='member_list'),
     path('members/<int:pk>/', views.MemberDetailView.as_view(), name='member_detail'),
+    path('members/create/', views.MemberCreateView.as_view(), name='member_create'),
     
     # Borrowings
     path('borrowings/', views.BorrowingListView.as_view(), name='borrowing_list'),

@@ -6,99 +6,71 @@
 <div class="row">
     <!-- Welcome Section -->
     <div class="col-12 mb-4">
-        <div class="card bg-primary text-white">
-            <div class="card-body">
-                <h1 class="card-title">Welcome to the Library Management System</h1>
-                <p class="card-text">Your one-stop solution for managing books and library members.</p>
-            </div>
-        </div>
+        <h1>Library Management System</h1>
+        <p>A system for managing books and library members.</p>
     </div>
 
     <!-- Statistics Section -->
-    <div class="col-md-4 mb-4">
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">Library Statistics</h5>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        Total Books
-                        <span class="badge bg-primary rounded-pill">{{ stats.total_books }}</span>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        Available Books
-                        <span class="badge bg-success rounded-pill">{{ stats.available_books }}</span>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        Categories
-                        <span class="badge bg-info rounded-pill">{{ categories.count }}</span>
-                    </li>
-                </ul>
-            </div>
-        </div>
+    <div class="col-md-6 mb-4">
+        <h5>Library Statistics</h5>
+        <ul class="list-group">
+            <li class="list-group-item">
+                Total Books: {{ stats.total_books }}
+            </li>
+            <li class="list-group-item">
+                Available Books: {{ stats.available_books }}
+            </li>
+            <li class="list-group-item">
+                Categories: {{ categories.count }}
+            </li>
+        </ul>
     </div>
 
-    <!-- Quick Actions -->
-    <div class="col-md-4 mb-4">
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">Quick Actions</h5>
-                <div class="d-grid gap-2">
-                    <a href="{% url 'library:book_list' %}" class="btn btn-primary">
-                        <i class="fas fa-book"></i> Browse Books
-                    </a>
-                    {% if user.is_authenticated %}
-                        <a href="{% url 'library:borrowing_list' %}" class="btn btn-success">
-                            <i class="fas fa-clipboard-list"></i> View Borrowings
-                        </a>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Categories -->
-    <div class="col-md-4 mb-4">
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">Categories</h5>
-                <div class="list-group">
-                    {% for category in categories %}
-                        <a href="{% url 'library:book_list' %}?category={{ category.name }}" class="list-group-item list-group-item-action">
-                            {{ category.name }}
-                        </a>
-                    {% endfor %}
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Featured Books -->
-    <div class="col-12 mb-4">
-        <h2>Featured Books</h2>
-        <div class="row row-cols-1 row-cols-md-3 g-4">
-            {% for book in books %}
-                <div class="col">
-                    <div class="card h-100">
-                        {% if book.cover_image %}
-                            <img src="{{ book.cover_image.url }}" class="card-img-top" alt="{{ book.title }}">
-                        {% else %}
-                            <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
-                                <i class="fas fa-book fa-3x text-muted"></i>
-                            </div>
-                        {% endif %}
-                        <div class="card-body">
-                            <h5 class="card-title">{{ book.title }}</h5>
-                            <p class="card-text">{{ book.author.name }}</p>
-                            <p class="card-text">
-                                <small class="text-muted">ISBN: {{ book.isbn }}</small>
-                            </p>
-                            <a href="{% url 'library:book_detail' book.pk %}" class="btn btn-primary">View Details</a>
-                        </div>
-                    </div>
-                </div>
+    <!-- Quick Links -->
+    <div class="col-md-6 mb-4">
+        <h5>Quick Links</h5>
+        <ul class="list-group">
+            <li class="list-group-item">
+                <a href="{% url 'library:book_list' %}">Browse Books</a>
+            </li>
+            {% if user.is_authenticated %}
+                <li class="list-group-item">
+                    <a href="{% url 'library:borrowing_list' %}">View Borrowings</a>
+                </li>
+            {% endif %}
+            {% for category in categories %}
+                <li class="list-group-item">
+                    <a href="{% url 'library:book_list' %}?category={{ category.name }}">{{ category.name }}</a>
+                </li>
             {% endfor %}
-        </div>
+        </ul>
     </div>
 
+    <!-- Book List -->
+    <div class="col-12 mb-4">
+        <h2>Books</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>ISBN</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for book in books %}
+                    <tr>
+                        <td>{{ book.title }}</td>
+                        <td>{{ book.author.name }}</td>
+                        <td>{{ book.isbn }}</td>
+                        <td>
+                            <a href="{% url 'library:book_detail' book.pk %}">View</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
 {% endblock %} 

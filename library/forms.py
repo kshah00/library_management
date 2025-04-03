@@ -4,6 +4,7 @@ from .models import Book, Author, Category, Member, Borrowing
 from .exceptions import InvalidISBNError, InvalidEmailError, InvalidPhoneNumberError
 import re
 from django.utils import timezone
+from datetime import timedelta
 
 class BookForm(forms.ModelForm):
     class Meta:
@@ -88,9 +89,21 @@ class BorrowingForm(forms.ModelForm):
             'due_date': forms.DateInput(attrs={'type': 'date'}),
         }
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Set default due date to 14 days from today
+        if not self.instance.pk:  # Only for new instances
+            self.fields['due_date'].initial = timezone.now().date() + timedelta(days=14)
+
     def clean(self):
         cleaned_data = super().clean()
         due_date = cleaned_data.get('due_date')
-        if due_date and due_date <= timezone.now().date():
+        today = timezone.now().date()
+        
+        if not due_date:
+            raise forms.ValidationError("Due date is required")
+        
+        if due_date <= today:
             raise forms.ValidationError("Due date must be in the future")
+        
         return cleaned_data 
