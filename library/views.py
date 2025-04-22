@@ -220,4 +220,4 @@ def return_item(request, pk):
         else:
             messages.warning(request, "This item has already been returned")
             
-        return redirect('borrowing_list')
+        return redirect('library:borrowing_list')
